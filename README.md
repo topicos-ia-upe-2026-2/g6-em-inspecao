@@ -76,3 +76,34 @@ SHAHIN, M.; CHEN, F. F.; BOUZARY, H.; HOSSEINZADEH, A. Deploying Convolutional N
 2. **Fine-Tuning parcial:** blocos finais descongelados, a partir de `features[14]` como configuração inicial, treinados com o classificador e com taxa de aprendizado menor. O ponto de corte pode ser ajustado na validação.
 
 O objetivo é saber se ajustar parte das camadas pré-treinadas traz ganho sobre treinar só o classificador. Como a base é pequena, diferenças pequenas serão interpretadas com cautela.
+
+## 5. Dados: estratégia de coleta
+
+Nenhuma imagem foi coletada ainda. A base própria será construída por Vitória Jamile e Eraldo Barros, apenas com celulares iOS e Android.
+
+**Meta:** 200 fotografias, 100 APROVADAS e 100 RECUSADAS, de embalagens usadas pela fábrica, de dois tipos: pacotes plásticos e embalagens de papel, com cerca de metade de cada tipo por classe. Isso evita que o modelo associe o material à classe. Desvios por falta de material serão documentados.
+
+**Danos:** controlados (amassados, rasgos e perfurações feitos de propósito) e pré-existentes, quando disponíveis.
+
+**Critério de rotulagem:** antes da coleta, os dois integrantes definem por escrito o que é "dano que compromete a integridade" (rasgo que expõe o conteúdo, perfuração, amassado que deforma a estrutura) e o que é desgaste leve (pequeno vinco, sujeira superficial). Casos duvidosos são decididos em conjunto e registrados em `docs/decisions.md`.
+
+**Captura:** boa iluminação, fundo simples, enquadramento que mostre o estado geral, sem filtros ou edições. As duas classes são fotografadas com os mesmos fundos, iluminação, distâncias e dispositivos, e os dois integrantes fotografam as duas classes. Cada embalagem física tem até 3 ângulos, o que dá cerca de 68 embalagens (34 por classe). Sempre que possível, a mesma embalagem é fotografada intacta e depois danificada, e as duas versões ficam no mesmo grupo na divisão.
+
+**Formato:** fotografias em JPEG (as fotos HEIC de iPhone são convertidas, com a orientação EXIF aplicada), nomeadas como `EMB001_a1.jpg` (embalagem 001, ângulo 1). A resolução e os aparelhos usados serão registrados após a coleta.
+
+**Registro:** as imagens serão acompanhadas de um `metadata.csv`.
+
+| Coluna | Descrição |
+|---|---|
+| `arquivo` | Nome do arquivo |
+| `id_embalagem` | Embalagem física (obrigatória, base da divisão sem vazamento) |
+| `tipo_embalagem` | `plastico` ou `papel` |
+| `classe` | `aprovada` ou `recusada` |
+| `tipo_dano` | Tipo de dano, só para controle humano |
+| `origem_dano` | `controlado` ou `pre-existente` |
+| `dispositivo` | Aparelho usado |
+| `responsavel` | Quem fez a captura |
+
+**Origem, acesso e autorização:** será uma base própria, produzida pelos integrantes por meio de fotografias das embalagens utilizadas no contexto da Produtos Adrião. A coleta depende de autorização dos responsáveis pela empresa e deverá ser realizada sem registrar rostos, endereços, etiquetas ou outras informações pessoais. A autorização e as condições de uso e compartilhamento das imagens deverão ser confirmadas e documentadas antes da coleta. Como a base ainda não foi coletada, sua quantidade, distribuição e disponibilidade são metas planejadas, não dados já existentes.
+
+**Onde ficam os dados:** o conjunto completo não entra no repositório. Após a coleta, ficará em link externo (a definir na E2), com instruções de acesso nesta seção. Em `data/` ficam apenas o `metadata.csv` e algumas imagens de exemplo autorizadas, respeitando o limite de 50 MB da CI.
