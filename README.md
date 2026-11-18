@@ -107,3 +107,53 @@ Nenhuma imagem foi coletada ainda. A base própria será construída por Vitóri
 **Origem, acesso e autorização:** será uma base própria, produzida pelos integrantes por meio de fotografias das embalagens utilizadas no contexto da Produtos Adrião. A coleta depende de autorização dos responsáveis pela empresa e deverá ser realizada sem registrar rostos, endereços, etiquetas ou outras informações pessoais. A autorização e as condições de uso e compartilhamento das imagens deverão ser confirmadas e documentadas antes da coleta. Como a base ainda não foi coletada, sua quantidade, distribuição e disponibilidade são metas planejadas, não dados já existentes.
 
 **Onde ficam os dados:** o conjunto completo não entra no repositório. Após a coleta, ficará em link externo (a definir na E2), com instruções de acesso nesta seção. Em `data/` ficam apenas o `metadata.csv` e algumas imagens de exemplo autorizadas, respeitando o limite de 50 MB da CI.
+
+## 6. Plano de pré-processamento e avaliação
+
+**Pré-processamento:** verificação dos arquivos e conferência dos rótulos; redimensionamento direto para 224 × 224, sem corte central, para não descartar danos nas bordas; conversão em tensores; normalização com a média e o desvio padrão do ImageNet. O aumento de dados (*data augmentation*) é aplicado somente ao conjunto de treinamento e usa transformações leves que preservam o dano: espelhamento horizontal, rotações pequenas e variação de brilho e contraste.
+
+**Divisão dos dados:**
+
+| Conjunto | Proporção | Quantidade aproximada |
+|---|---|---|
+| Treino | 70% | 140 |
+| Validação | 15% | 30 |
+| Teste | 15% | 30 |
+
+A divisão é estratificada por classe e agrupada por `id_embalagem`, para que fotos da mesma embalagem não apareçam em conjuntos diferentes (vazamento de dados). O conjunto de teste só é usado na avaliação final, nunca para escolher hiperparâmetros. Com cerca de 30 imagens de teste, cada erro muda as métricas em mais de 3 pontos percentuais, então vamos reportar intervalos de confiança e, se o tempo permitir, uma validação cruzada estratificada por grupos.
+
+**Hiperparâmetros iniciais** (planejados, sujeitos a ajuste na validação):
+
+| Parâmetro | Valor |
+|---|---|
+| Entrada | 224 × 224 |
+| Perda | CrossEntropyLoss |
+| Otimizador | Adam |
+| Épocas máximas | 30 |
+| Batch size | 16 |
+| Early stopping | Perda de validação |
+| Learning rate (classificador) | 0,001 |
+| Learning rate (Fine-Tuning) | 0,0001 |
+
+**Baseline:** antes de avaliar a MobileNetV2, será estabelecido um baseline simples que sempre prevê a classe majoritária do conjunto de treinamento. Como a meta inicial é manter as classes equilibradas, esse baseline deverá ficar próximo de 50% de acurácia, caso o equilíbrio seja confirmado na divisão. A comparação será feita com o mesmo conjunto de teste e as mesmas métricas.
+
+**Métricas:** acurácia, precisão, recall, F1-score, especificidade, matriz de confusão e ROC-AUC. A classe positiva é RECUSADA, e o recall dela recebe atenção especial, porque um falso negativo é uma embalagem danificada classificada como aprovada.
+
+## 7. Riscos e limitações
+
+| Risco | Tratamento |
+|---|---|
+| Base pequena | Transfer Learning, aumento de dados (*data augmentation*) e intervalos de confiança |
+| Teste muito pequeno (cerca de 30) | Reportar incerteza; validação cruzada por grupos |
+| Variação entre celulares | Registrar dispositivos; os dois integrantes fotografam as duas classes |
+| Variação de iluminação e fundo | Padronizar a captura, com os mesmos fundos nas duas classes |
+| Modelo aprender o material | Equilibrar os dois tipos entre as classes |
+| Viés entre danos controlados e reais | Registrar `origem_dano`; incluir os dois casos |
+| Desbalanceamento | Planejar 100 imagens por classe e conferir a distribuição final |
+| Sobreajuste | Acompanhar perdas de treinamento e validação; parada antecipada (*early stopping*) |
+| Vazamento de dados | Divisão agrupada por `id_embalagem` |
+| Limitação computacional | Registrar o ambiente disponível (CPU/GPU, memória e tempo de treinamento); ajustar tamanho do lote (*batch size*) e camadas treináveis |
+| Prazo curto de coleta (E2 em 22/11) | Começar a coleta imediatamente; se faltar material, reduzir a meta e documentar |
+| Rotulagem inconsistente | Critério escrito e conferência dos rótulos antes do treinamento |
+
+O desempenho obtido no projeto não deve ser apresentado como prova de eficácia em ambiente industrial real.
