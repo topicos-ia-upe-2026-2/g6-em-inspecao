@@ -157,3 +157,37 @@ A divisão é estratificada por classe e agrupada por `id_embalagem`, para que f
 | Rotulagem inconsistente | Critério escrito e conferência dos rótulos antes do treinamento |
 
 O desempenho obtido no projeto não deve ser apresentado como prova de eficácia em ambiente industrial real.
+
+## 8. Estrutura do repositório
+
+Mantemos a estrutura do template.
+
+```text
+src/        código: treinamento, inferência, aplicação (a partir da E2)
+docs/       decisions.md, experiments.md, report.md
+data/       metadata.csv e imagens de exemplo; o restante via link externo
+notebooks/  análise exploratória (opcional)
+```
+
+Pesos e checkpoints (`.pt`, `.safetensors`) também ficam fora do repositório, com link e instruções de download. Chaves de API e credenciais não são versionadas; se o projeto precisar de variáveis de ambiente, elas serão listadas aqui.
+
+## 9. Código existente e créditos
+
+Usamos a MobileNetV2 do torchvision (PyTorch, licença BSD-3-Clause) com pesos pré-treinados no ImageNet, e as bibliotecas NumPy, Pandas, Scikit-learn, Matplotlib e Streamlit. O que o grupo desenvolve por conta própria: a base de fotografias e o `metadata.csv`, o pipeline de pré-processamento e divisão agrupada, a adaptação do classificador, os experimentos de Transfer Learning e Fine-Tuning, a avaliação e a interface.
+
+## 10. Divisão de tarefas
+
+- **Vitória Jamile:** coleta de fotos, preparação dos dados, pipeline de pré-processamento, treinamento e avaliação dos modelos.
+- **Eraldo Barros:** coleta de fotos, preenchimento e conferência do `metadata.csv`, conferência dos rótulos, interface Streamlit e integração.
+- **Ambos:** critério de rotulagem, revisão cruzada do código, análise dos resultados, documentação e apresentação.
+
+## 11. Como executar
+
+Será preenchido nas etapas E2 e E3, quando houver código, `requirements.txt` e instruções de acesso aos dados. O ambiente computacional efetivamente utilizado (execução local ou serviço em nuvem, hardware, memória e tempo de treinamento) também será registrado junto aos experimentos.
+
+## Referências
+
+- SHAHIN, M.; CHEN, F. F.; BOUZARY, H.; HOSSEINZADEH, A. Deploying Convolutional Neural Network to Reduce Waste in Production System. *Manufacturing Letters*, v. 35, p. 1187–1195, 2023. [doi.org/10.1016/j.mfglet.2023.08.127](https://doi.org/10.1016/j.mfglet.2023.08.127)
+- SANDLER, M.; HOWARD, A.; ZHU, M.; ZHMOGINOV, A.; CHEN, L.-C. MobileNetV2: Inverted Residuals and Linear Bottlenecks. CVPR, 2018, p. 4510–4520. [doi.org/10.1109/CVPR.2018.00474](https://doi.org/10.1109/CVPR.2018.00474)
+- PYTORCH. [MobileNetV2, documentação do torchvision](https://pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v2.html). Acesso em: 10 nov. 2026.
+- VORHEMUS, C. [Industrial Quality Control of Packages](https://www.kaggle.com/datasets/christianvorhemus/industrial-quality-control-of-packages). Kaggle. Conjunto usado por Shahin et al. (2023).
