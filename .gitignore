@@ -221,8 +221,3 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-
-# Projeto: dados completos e pesos ficam fora do repositório (link externo no README)
-data/raw/
-outputs/**/*.pt
-outputs/**/*.safetensors

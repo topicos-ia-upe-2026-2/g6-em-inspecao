@@ -8,12 +8,12 @@ Autores: Vitória Jamile e Eraldo Barros.
 
 ## Status do projeto
 
-Entrega atual: **E2, dados preparados e primeira adaptação**. O estado real da coleta e dos experimentos está em [`docs/report_e2.md`](docs/report_e2.md) e [`docs/experiments.md`](docs/experiments.md). As seções 1 a 10 vêm da E1; a seção 11 explica como executar o pipeline e a 12 resume a E2.
+Entrega atual: **E1, definição do projeto**. Nenhuma imagem foi coletada e nenhum modelo foi treinado. Este README cobre problema, escopo, artigo base, modelo, estratégia de coleta e plano de avaliação, e será completado a cada entrega.
 
 | Entrega | Conteúdo | Data | Situação |
 |---|---|---|---|
-| E1 | Definição do projeto | 17/11/2026 | Em revisão |
-| E2 | Dados e primeira adaptação | 22/11/2026 | Em revisão |
+| E1 | Definição do projeto | 13/11/2026 | Em revisão |
+| E2 | Dados e primeira adaptação | 22/11/2026 | Pendente |
 | E3 | Aplicação e resultados experimentais | 29/11/2026 | Pendente |
 | E4 | Apresentação e entrega final | 07/12/2026 | Pendente |
 
@@ -163,7 +163,7 @@ O desempenho obtido no projeto não deve ser apresentado como prova de eficácia
 Mantemos a estrutura do template.
 
 ```text
-src/        prepare_data.py, baseline.py, model_utils.py, train.py, evaluate.py, metrics.py (aplicação na E3)
+src/        código: treinamento, inferência, aplicação (a partir da E2)
 docs/       decisions.md, experiments.md, report.md
 data/       metadata.csv e imagens de exemplo; o restante via link externo
 notebooks/  análise exploratória (opcional)
@@ -183,35 +183,7 @@ Usamos a MobileNetV2 do torchvision (PyTorch, licença BSD-3-Clause) com pesos p
 
 ## 11. Como executar
 
-Todos os comandos partem da raiz do repositório. Python 3.10+ (a versão usada nos experimentos é registrada em `outputs/<modo>/run_config.json`).
-
-```bash
-pip install -r requirements.txt
-
-# 1. Colocar as fotos em data/raw/ (link do conjunto completo: ver docs/report_e2.md) e preencher data/metadata.csv
-# 2. Validar e dividir (agrupado por embalagem, sem vazamento); gera data/splits.csv e data/split_report.md
-python src/prepare_data.py --metadata data/metadata.csv --images data/raw --seed 42
-
-# 3. Baselines (classe majoritária e histograma de cor + regressão logística)
-python src/baseline.py
-
-# 4. Primeira adaptação: Transfer Learning e Fine-Tuning parcial
-python src/train.py --mode transfer
-python src/train.py --mode finetune
-
-# 5. Métricas por checkpoint (validação). O teste só deve ser avaliado uma vez, ao final:
-python src/evaluate.py --mode finetune --checkpoint outputs/finetune/best.pt --split val
-python src/evaluate.py --mode finetune --checkpoint outputs/finetune/best.pt --split test
-```
-
-Os pesos pré-treinados (`MobileNet_V2_Weights.IMAGENET1K_V2`) são baixados pelo torchvision na primeira execução. Checkpoints (`best.pt`) ficam fora do Git; logs, curvas e JSON de métricas em `outputs/` são versionados como evidência. Hardware, tempo de treino e versões ficam em `run_config.json`.
-
-## 12. Resumo da E2
-
-- **Dados:** `src/prepare_data.py` valida o `metadata.csv` (colunas, rótulos, arquivos, imagens íntegras), e divide ≈70/15/15 agrupando por `id_embalagem`, com checagem automática de vazamento.
-- **Baseline:** classe majoritária e histograma de cor com regressão logística, nas mesmas partições e métricas do modelo.
-- **Fine-tuning inicial:** MobileNetV2 (ImageNet-1K V2) em dois modos, com log por época, curvas e configuração/ambiente gravados. Decisões em [`docs/decisions.md`](docs/decisions.md).
-- **Resultados medidos e limitações:** [`docs/experiments.md`](docs/experiments.md) e [`docs/report_e2.md`](docs/report_e2.md).
+Será preenchido nas etapas E2 e E3, quando houver código, `requirements.txt` e instruções de acesso aos dados. O ambiente computacional efetivamente utilizado (execução local ou serviço em nuvem, hardware, memória e tempo de treinamento) também será registrado junto aos experimentos.
 
 ## Referências
 
