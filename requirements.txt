@@ -1,0 +1,12 @@
+# Versões fixadas para reprodutibilidade (ajuste para as versões efetivamente usadas nos experimentos)
+torch==2.5.1
+torchvision==0.20.1
+numpy>=1.26,<3
+pandas>=2.1
+scikit-learn>=1.4
+matplotlib>=3.8
+pillow>=10.2
+# Opcional: converter fotos HEIC de iPhone
+# pillow-heif>=0.16
+# Interface (E3)
+# streamlit>=1.35
